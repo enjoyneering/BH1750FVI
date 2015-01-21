@@ -228,22 +228,22 @@ float BH1750FVI::readLightLevel(void)
   switch(_sensorResolution)
   {
     case BH1750_CONTINUOUS_HIGH_RES_MODE:
-      integrationTime = 125 * _sensorSensitivity;
+      integrationTime = 120 * _sensorSensitivity;
     break;
     case BH1750_CONTINUOUS_HIGH_RES_MODE_2:
-      integrationTime = 125 * _sensorSensitivity;
+      integrationTime = 120 * _sensorSensitivity;
     break;
     case BH1750_CONTINUOUS_LOW_RES_MODE:
-      integrationTime = 20 * _sensorSensitivity;
+      integrationTime = 16 * _sensorSensitivity;
     break;
     case BH1750_ONE_TIME_HIGH_RES_MODE:
-      integrationTime = 125 * _sensorSensitivity;
+      integrationTime = 120 * _sensorSensitivity;
     break;
     case BH1750_ONE_TIME_HIGH_RES_MODE_2:
-      integrationTime = 125 * _sensorSensitivity;
+      integrationTime = 120 * _sensorSensitivity;
     break;
     case BH1750_ONE_TIME_LOW_RES_MODE:
-      integrationTime = 20 * _sensorSensitivity;
+      integrationTime = 16 * _sensorSensitivity;
     break;
   }
 
