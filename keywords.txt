@@ -11,5 +11,5 @@ BH1750FVI KEYWORD1
 setSensitivity 	KEYWORD2
 setResolution 	KEYWORD2
 readLightLevel 	KEYWORD2
-powerDown 	 KEYWORD2
-reset 		  KEYWORD2
+powerDown 	KEYWORD2
+reset 		KEYWORD2
