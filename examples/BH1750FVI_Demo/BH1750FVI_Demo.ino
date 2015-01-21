@@ -66,7 +66,7 @@ void loop()
   Serial.println(F(" lx"));
 
 
-  Serial.println(F("DEMO: Sensitivity - 2.0. Resolution - 0.5 lx. Contunuous Mode"));
+  Serial.println(F("DEMO: Sensitivity - 2.0. Resolution - 0.5 lx. Continuous Mode"));
   myBH1750.setSensitivity(2);
 
   Serial.print(F("Light level: "));
@@ -74,7 +74,7 @@ void loop()
   Serial.println(F(" lx"));
  
 
-  Serial.println(F("DEMO: Sensitivity - 0.5. Resolution - 0.5 lx. Contunuous Mode"));
+  Serial.println(F("DEMO: Sensitivity - 0.5. Resolution - 0.5 lx. Continuous Mode"));
   myBH1750.setSensitivity(0.5);
   
   Serial.print(F("Light level: "));
@@ -91,7 +91,7 @@ void loop()
   Serial.println(F(" lx"));
   
   
-  Serial.println(F("DEMO: Sensitivity - 0.45. Resolution - 0.5 lx. Contunuous Mode"));
+  Serial.println(F("DEMO: Sensitivity - 0.45. Resolution - 0.5 lx. Continuous Mode"));
   myBH1750.setSensitivity(0.45);
   myBH1750.setResolution(BH1750_CONTINUOUS_HIGH_RES_MODE_2);
   
