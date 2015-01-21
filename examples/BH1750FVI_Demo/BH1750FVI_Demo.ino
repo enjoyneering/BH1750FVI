@@ -99,6 +99,7 @@ void loop()
   Serial.print(myBH1750.readLightLevel());
   Serial.println(F(" lx"));
   
+  myBH1750.setSensitivity(1);
   
   Serial.println(F("DEMO: Manual Power Down"));
   myBH1750.powerDown();
