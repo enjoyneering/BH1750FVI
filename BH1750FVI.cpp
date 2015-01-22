@@ -247,7 +247,7 @@ float BH1750FVI::readLightLevel(void)
     break;
   }
 
-  delay(integrationTime);
+  delay(integrationTime + 3);
 
   /* read raw Light Level */
   Wire.requestFrom(_sensorAddress, 2);
