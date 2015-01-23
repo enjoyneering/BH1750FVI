@@ -7,7 +7,7 @@ BH1750FVI KEYWORD1
 #######################################
 # Methods and Functions (KEYWORD2)
 #######################################
-
+begin		KEYWORD2
 setSensitivity 	KEYWORD2
 setResolution 	KEYWORD2
 readLightLevel 	KEYWORD2
