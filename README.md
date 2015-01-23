@@ -11,6 +11,6 @@ Supports all sensors features:
 ROHM BH1750FVI uses I2C to communicate, 2 pins are required to interface
 
 Connect BH1750FVI to pins :  SDA  SCL
-Uno, Redboard, Pro:          A4   A5
-Mega2560, Due:               20   21
-Leonardo:                    2    3
+- Uno, Redboard, Pro:          A4   A5
+- Mega2560, Due:               20   21
+- Leonardo:                    2    3
