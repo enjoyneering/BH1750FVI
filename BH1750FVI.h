@@ -35,11 +35,11 @@ This is an Arduino library for the ROHM BH1750FVI Ambient Light Sensor
 #define BH1750_POWER_ON                     0x01	/* Wating for measurment command */
 #define BH1750_RESET                        0x07	/* Reset all registers. Not accepted in POWER_DOWN mode */
 
-#define BH1750_MEASUREMENT_TIME_H           0x40  /* High Bit of changing Measurement Time. For 50% transparent glass the time = 2 * Measurement Time */
-#define BH1750_MEASUREMENT_TIME_L           0x60  /* Low Bit of changing Measurement Time. For 50% transparent glass the time = 2 * Measurement Time */
-#define BH1750_MTREG_DEFAULT                0x45     /* Default  = 69 */
-#define BH1750_MTREG_MIN                    0x1F     /* Min. Integration time aka Integration time = 31 */
-#define BH1750_MTREG_MAX                    0xFE     /* Max. Integration time aka Integration time = 254 */  
+#define BH1750_MEASUREMENT_TIME_H           0x04  /* High Bit of changing Measurement Time. */
+#define BH1750_MEASUREMENT_TIME_L           0x60  /* Low  Bit of changing Measurement Time. */
+#define BH1750_MTREG_DEFAULT                0x45     /* Default Integration/Measurement time = 69  */
+#define BH1750_MTREG_MIN                    0x1F     /* Min.    Integration/Measurement time = 31  */
+#define BH1750_MTREG_MAX                    0xFE     /* Max.    Integration/Measurement time = 254 */  
 
 
 typedef enum
