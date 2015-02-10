@@ -133,12 +133,14 @@ void BH1750FVI::setSensitivity(float sensorSensitivity)
   measurnentTimeHighBit = _currentMTreg;
   measurnentTimeLowBit  = _currentMTreg;
 
-  measurnentTimeHighBit >>= 5;
-  
-  measurnentTimeLowBit <<= 3;
-  measurnentTimeLowBit >>= 3;
-
+  /* HIGH bit manipulation */
+  measurnentTimeHighBit >>= 4;
+  measurnentTimeHighBit <<= 3;
   measurnentTimeHighBit |= BH1750_MEASUREMENT_TIME_H;
+  
+  /* LOW bit manipulation */
+  measurnentTimeLowBit <<= 4;
+  measurnentTimeLowBit >>= 4;
   measurnentTimeLowBit |= BH1750_MEASUREMENT_TIME_L;
 
   /* Update the sensor Measurment Timet register */
