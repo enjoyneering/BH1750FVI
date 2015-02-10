@@ -64,6 +64,9 @@ void loop()
   Serial.print(F("Light level: "));
   Serial.print(myBH1750.readLightLevel());
   Serial.println(F(" lx"));
+  Serial.print(F("Power for 555nm: "));
+  Serial.print(myBH1750.readLightLevel()/683);
+  Serial.println(F("Watt/m^2"));
 
 
   Serial.println(F("DEMO: Sensitivity - 2.0. Resolution - 0.5 lx. Continuous Mode"));
