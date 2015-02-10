@@ -4,8 +4,8 @@ This is an Arduino library for the ROHM BH1750FVI Ambient Light Sensor
 
   written by enjoyneering79
 
-  Wide range: 			    1 - 65535 lx (in defaul mode)
-  Possible to detect: 	0.11 lx - 100'000 lx by changing
+  Wide range:           1 - 65535 lx (in defaul mode)
+  Possible to detect:   0.11 lx - 100'000 lx by changing
                         Sensitivity aka Integration Time
 
   These sensor uses I2C  to communicate, 2 pins are required to  
