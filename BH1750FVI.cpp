@@ -143,7 +143,7 @@ void BH1750FVI::setSensitivity(float sensorSensitivity)
   measurnentTimeLowBit >>= 4;
   measurnentTimeLowBit |= BH1750_MEASUREMENT_TIME_L;
 
-  /* Update the sensor Measurment Timet register */
+  /* Update the sensor Measurment Timer register */
   write8(measurnentTimeHighBit);
   write8(measurnentTimeLowBit);
 
@@ -249,7 +249,7 @@ float BH1750FVI::readLightLevel(void)
     break;
   }
 
-  delay(integrationTime + 3);
+  delay(integrationTime);
 
   /* read raw Light Level */
   Wire.requestFrom(_sensorAddress, 2);
