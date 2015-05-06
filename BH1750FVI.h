@@ -6,7 +6,7 @@ This is an Arduino library for the ROHM BH1750FVI Ambient Light Sensor
 
   Wide range:           1 - 65535 lx (in defaul mode)
   Possible to detect:   0.11 lx - 100'000 lx by changing
-                        Sensitivity aka Integration Time
+  						          Sensitivity aka Integration Time
 
   These sensor uses I2C  to communicate, 2 pins are required to  
   interface
@@ -39,7 +39,7 @@ This is an Arduino library for the ROHM BH1750FVI Ambient Light Sensor
 #define BH1750_MEASUREMENT_TIME_L           0x60  /* Low  Bit of changing Measurement Time. */
 #define BH1750_MTREG_DEFAULT                0x45     /* Default Integration/Measurement time = 69  */
 #define BH1750_MTREG_MIN                    0x1F     /* Min.    Integration/Measurement time = 31  */
-#define BH1750_MTREG_MAX                    0xFE     /* Max.    Integration/Measurement time = 254 */  
+#define BH1750_MTREG_MAX                    0xFE     /* Max.    Integration/Measurement time = 254 */
 
 
 typedef enum
@@ -47,7 +47,7 @@ typedef enum
 BH1750_DEFAULT_I2CADDR 	= 0x23,	/* Device Address on i2c serial bus when address pin LOW */
 BH1750_SECOND_I2CADDR 	= 0x5C	/* Device Address on i2c serial bus when address pin HIGH */
 }
-sensorAddress;
+BH1750FVI_Address;
 
 typedef enum
 {
@@ -59,17 +59,17 @@ BH1750_ONE_TIME_HIGH_RES_MODE     = 0x20,  /* One-time measurement (device sets 
 BH1750_ONE_TIME_HIGH_RES_MODE_2   = 0x21,  /* One-time measurement (device sets the Power down after measurement) @ 0.5 lx resolution. Integration time is approx 120ms. */
 BH1750_ONE_TIME_LOW_RES_MODE      = 0x23   /* One-time measurement (device sets the Power down after measurement) @ 4.0 lx resolution. Integration time is approx 16ms.  */
 }   
-sensorResolution;
+BH1750FVI_Resolution;
 
 class BH1750FVI 
 {
  public:
 
-  BH1750FVI(sensorAddress = BH1750_DEFAULT_I2CADDR, sensorResolution = BH1750_CONTINUOUS_HIGH_RES_MODE_2, float sensorSensitivity = 1.00);
+  BH1750FVI(BH1750FVI_Address = BH1750_DEFAULT_I2CADDR, BH1750FVI_Resolution = BH1750_CONTINUOUS_HIGH_RES_MODE_2, float BH1750FVI_Sensitivity = 1.00);
 
   bool 	begin(void);
-  void 	setSensitivity(float sensorSensitivity);
-  void 	setResolution(sensorResolution it);
+  void 	setSensitivity(float BH1750FVI_Sensitivity);
+  void 	setResolution(BH1750FVI_Resolution it);
   float readLightLevel(void);
   void 	powerDown(void);
   void  reset(void);
@@ -78,15 +78,13 @@ class BH1750FVI
   uint8_t   _currentMTreg;
   bool      _BH1750FVIinitialisation;
   bool      _powerDown;
-  float     _sensorSensitivity;
+  float     _BH1750FVI_Sensitivity;
 
-  sensorResolution  _sensorResolution;
-  sensorAddress     _sensorAddress;
+  BH1750FVI_Resolution  _BH1750FVI_Resolution;
+  BH1750FVI_Address     _BH1750FVI_Address;
 
   void 		powerOn(void);
   void 		write8(uint8_t data);
 };
 
 #endif
-
-
