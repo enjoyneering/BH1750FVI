@@ -28,12 +28,12 @@ This is an Arduino library for the ROHM BH1750FVI Ambient Light Sensor
     Constructor
 */
 /**************************************************************************/
-BH1750FVI::BH1750FVI(sensorAddress it_1, sensorResolution it_2, float sensorSensitivity)
+BH1750FVI::BH1750FVI(BH1750FVI_Address it_1, BH1750FVI_Resolution it_2, float BH1750FVI_Sensitivity)
 {
   _BH1750FVIinitialisation = false;
-  _sensorAddress = it_1;
-  _sensorResolution = it_2;
-  _sensorSensitivity = sensorSensitivity;
+  _BH1750FVI_Address = it_1;
+  _BH1750FVI_Resolution = it_2;
+  _BH1750FVI_Sensitivity = BH1750FVI_Sensitivity;
 }
 
 /**************************************************************************/
@@ -55,7 +55,7 @@ bool BH1750FVI::begin(void)
   Wire.begin();
 
   /* Make sure we're actually connected */
-  Wire.beginTransmission(_sensorAddress);
+  Wire.beginTransmission(_BH1750FVI_Address);
   if (Wire.endTransmission() != 0)
   {
     return false;
@@ -63,8 +63,8 @@ bool BH1750FVI::begin(void)
 
   _BH1750FVIinitialisation = true;
 
-  setResolution(_sensorResolution);
-  setSensitivity(_sensorSensitivity);
+  setResolution(_BH1750FVI_Resolution);
+  setSensitivity(_BH1750FVI_Sensitivity);
 
   return true;
 }
@@ -83,7 +83,7 @@ bool BH1750FVI::begin(void)
     BH1750_ONE_TIME_LOW_RES_MODE    - 4.0 lx resolution. Integration time 16ms
 */
 /**************************************************************************/
-void BH1750FVI::setResolution(sensorResolution it)
+void BH1750FVI::setResolution(BH1750FVI_Resolution it)
 {
 
   if (_BH1750FVIinitialisation != true)
@@ -94,7 +94,7 @@ void BH1750FVI::setResolution(sensorResolution it)
   write8(it);
 
   /* Update value placeholders */
-  _sensorResolution = it;
+  _BH1750FVI_Resolution = it;
 }
 
 /**************************************************************************/
@@ -105,7 +105,7 @@ void BH1750FVI::setResolution(sensorResolution it)
     - 3.68, maximum Sensitivity
 */
 /**************************************************************************/
-void BH1750FVI::setSensitivity(float sensorSensitivity)
+void BH1750FVI::setSensitivity(float BH1750FVI_Sensitivity)
 {
 
   uint8_t value;
@@ -117,7 +117,7 @@ void BH1750FVI::setSensitivity(float sensorSensitivity)
     begin();
   }
 
-  value = BH1750_MTREG_DEFAULT * sensorSensitivity;
+  value = BH1750_MTREG_DEFAULT * BH1750FVI_Sensitivity;
 
   if (value < BH1750_MTREG_MIN) 
   {
@@ -148,7 +148,7 @@ void BH1750FVI::setSensitivity(float sensorSensitivity)
   write8(measurnentTimeLowBit);
 
   /* Update value placeholders */
-  _sensorSensitivity = sensorSensitivity;
+  _BH1750FVI_Sensitivity = BH1750FVI_Sensitivity;
 }
 
 /**************************************************************************/
@@ -165,6 +165,7 @@ void BH1750FVI::powerOn(void)
   }
 
   write8(BH1750_POWER_ON);
+
   _powerDown = false;
 }
 
@@ -224,35 +225,35 @@ float BH1750FVI::readLightLevel(void)
     powerOn();
   }
 
-  setSensitivity(_sensorSensitivity);
-  setResolution(_sensorResolution);
+  setSensitivity(_BH1750FVI_Sensitivity);
+  setResolution(_BH1750FVI_Resolution);
 
-  switch(_sensorResolution)
+  switch(_BH1750FVI_Resolution)
   {
     case BH1750_CONTINUOUS_HIGH_RES_MODE:
-      integrationTime = 120 * _sensorSensitivity;
+      integrationTime = 120 * _BH1750FVI_Sensitivity;
     break;
     case BH1750_CONTINUOUS_HIGH_RES_MODE_2:
-      integrationTime = 120 * _sensorSensitivity;
+      integrationTime = 120 * _BH1750FVI_Sensitivity;
     break;
     case BH1750_CONTINUOUS_LOW_RES_MODE:
-      integrationTime = 16 * _sensorSensitivity;
+      integrationTime = 16 * _BH1750FVI_Sensitivity;
     break;
     case BH1750_ONE_TIME_HIGH_RES_MODE:
-      integrationTime = 120 * _sensorSensitivity;
+      integrationTime = 120 * _BH1750FVI_Sensitivity;
     break;
     case BH1750_ONE_TIME_HIGH_RES_MODE_2:
-      integrationTime = 120 * _sensorSensitivity;
+      integrationTime = 120 * _BH1750FVI_Sensitivity;
     break;
     case BH1750_ONE_TIME_LOW_RES_MODE:
-      integrationTime = 16 * _sensorSensitivity;
+      integrationTime = 16 * _BH1750FVI_Sensitivity;
     break;
   }
 
   delay(integrationTime);
 
   /* read raw Light Level */
-  Wire.requestFrom(_sensorAddress, 2);
+  Wire.requestFrom(_BH1750FVI_Address, 2);
 #if (ARDUINO >= 100)
   rawLightLevel = Wire.read();
   rawLightLevel <<= 8;
@@ -264,7 +265,7 @@ float BH1750FVI::readLightLevel(void)
 #endif
 
   /* calculate Light Level */
-  if (_sensorResolution == BH1750_CONTINUOUS_HIGH_RES_MODE_2 || _sensorResolution == BH1750_ONE_TIME_HIGH_RES_MODE_2)
+  if (_BH1750FVI_Resolution == BH1750_CONTINUOUS_HIGH_RES_MODE_2 || _BH1750FVI_Resolution == BH1750_ONE_TIME_HIGH_RES_MODE_2)
   {
     LightLevel = (0.5 * rawLightLevel * _currentMTreg) / (1.2 * (float)BH1750_MTREG_DEFAULT);
   }
@@ -274,6 +275,7 @@ float BH1750FVI::readLightLevel(void)
   }
 
   return LightLevel;
+
 }
 
 /**************************************************************************/
@@ -283,7 +285,7 @@ float BH1750FVI::readLightLevel(void)
 /**************************************************************************/
 void BH1750FVI::write8(uint8_t value)
 {
-  Wire.beginTransmission(_sensorAddress);
+  Wire.beginTransmission(_BH1750FVI_Address);
 #if (ARDUINO >= 100)
   Wire.write(value);
 #else
@@ -291,5 +293,3 @@ void BH1750FVI::write8(uint8_t value)
 #endif
   Wire.endTransmission();
 }
-
-
