@@ -31,9 +31,9 @@ This is an Arduino library for the ROHM BH1750FVI Ambient Light Sensor
  #include <Wire.h>
 
 
-#define BH1750_POWER_DOWN                   0x00	/* No active state */
-#define BH1750_POWER_ON                     0x01	/* Wating for measurment command */
-#define BH1750_RESET                        0x07	/* Reset all registers. Not accepted in POWER_DOWN mode */
+#define BH1750_POWER_DOWN                   0x00  /* No active state */
+#define BH1750_POWER_ON                     0x01  /* Wating for measurment command */
+#define BH1750_RESET                        0x07  /* Reset all registers. Not accepted in POWER_DOWN mode */
 
 #define BH1750_MEASUREMENT_TIME_H           0x04  /* High Bit of changing Measurement Time. */
 #define BH1750_MEASUREMENT_TIME_L           0x60  /* Low  Bit of changing Measurement Time. */
