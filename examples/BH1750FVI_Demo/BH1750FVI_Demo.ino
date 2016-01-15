@@ -31,7 +31,7 @@ BH1750_CONTINUOUS_LOW_RES_MODE 	  - Continuous measurement @ 4.0 lx res. mode. I
 
 BH1750_ONE_TIME_HIGH_RES_MODE   - One-time (Power down after measurement) @ 1.0 lx res. mode. Integration time 120ms
 BH1750_ONE_TIME_HIGH_RES_MODE_2 - One-time (Power down after measurement) @ 0.5 lx res. mode. Integration time 120ms
-BH1750_ONE_TIME_LOW_RES_MODE 	  - One-time (Power down after measurement) @ 4.0 lx res. mode. Integration time 16ms
+BH1750_ONE_TIME_LOW_RES_MODE 	- One-time (Power down after measurement) @ 4.0 lx res. mode. Integration time 16ms
 
 sensitivity:
 NOTE: your value have to be between min. and max.
