@@ -31,7 +31,7 @@ BH1750_CONTINUOUS_LOW_RES_MODE 	  - Continuous measurement @ 4.0 lx res. mode. I
 
 BH1750_ONE_TIME_HIGH_RES_MODE   - One-time (Power down after measurement) @ 1.0 lx res. mode. Integration time 120ms
 BH1750_ONE_TIME_HIGH_RES_MODE_2 - One-time (Power down after measurement) @ 0.5 lx res. mode. Integration time 120ms
-BH1750_ONE_TIME_LOW_RES_MODE 	- One-time (Power down after measurement) @ 4.0 lx res. mode. Integration time 16ms
+BH1750_ONE_TIME_LOW_RES_MODE 	  - One-time (Power down after measurement) @ 4.0 lx res. mode. Integration time 16ms
 
 sensitivity:
 NOTE: your value have to be between min. and max.
@@ -43,7 +43,7 @@ DEFAULT
 BH1750FVI(BH1750_DEFAULT_I2CADDR, BH1750_CONTINUOUS_HIGH_RES_MODE_2, 1.00)
 */
 
-BH1750FVI myBH1750;
+BH1750FVI myBH1750; // or BH1750FVI(PUT address HERE, PUT resolution HERE, PUT sensitivity HERE)
 
 void setup()
 {
@@ -61,53 +61,52 @@ void loop()
 {
   Serial.println(F(""));
   Serial.println(F("DEMO: Default settings"));
-  Serial.print(F("Light level: "));
+  
+  Serial.println(F("Light level: "));
   Serial.print(myBH1750.readLightLevel());
-  Serial.println(F(" lx"));
-  Serial.print(F("Power for 555nm: "));
+  Serial.print(F(" lx"));
+  
+  Serial.println(F("Power for 555nm: "));
   Serial.print(myBH1750.readLightLevel()/683);
-  Serial.println(F(" Watt/m^2"));
+  Serial.print(F(" Watt/m^2"));
 
-
-  Serial.println(F("DEMO: Sensitivity - 2.0. Resolution - 0.5 lx. Continuous Mode"));
   myBH1750.setSensitivity(2);
-
-  Serial.print(F("Light level: "));
+  
+  Serial.println(F("DEMO: Sensitivity - 2.0. Resolution - 0.5 lx. Continuous Mode (no auto power down after measurement)"));
+  Serial.println(F("Light level: "));
   Serial.print(myBH1750.readLightLevel());
-  Serial.println(F(" lx"));
+  Serial.print(F(" lx"));
  
-
-  Serial.println(F("DEMO: Sensitivity - 0.5. Resolution - 0.5 lx. Continuous Mode"));
   myBH1750.setSensitivity(0.5);
   
-  Serial.print(F("Light level: "));
+  Serial.println(F("DEMO: Sensitivity - 0.5. Resolution - 0.5 lx. Continuous Mode (no auto power down after measurement)"));
+  Serial.println(F("Light level: "));
   Serial.print(myBH1750.readLightLevel());
-  Serial.println(F(" lx"));
+  Serial.print(F(" lx"));
   
-  
-  Serial.println(F("DEMO: Sensitivity - 3.68. Resolution - 1.0 lx. Auto Power Down"));
   myBH1750.setSensitivity(3.68);
   myBH1750.setResolution(BH1750_ONE_TIME_HIGH_RES_MODE);
   
-  Serial.print(F("Light level: "));
+  Serial.println(F("DEMO: Max. Sensitivity - 3.68. Resolution - 1.0 lx. Auto Power Down"));
+  Serial.println(F("Light level: "));
   Serial.print(myBH1750.readLightLevel());
-  Serial.println(F(" lx"));
+  Serial.print(F(" lx"));
   
-  
-  Serial.println(F("DEMO: Sensitivity - 0.45. Resolution - 0.5 lx. Continuous Mode"));
   myBH1750.setSensitivity(0.45);
   myBH1750.setResolution(BH1750_CONTINUOUS_HIGH_RES_MODE_2);
   
-  Serial.print(F("Light level: "));
+  Serial.println(F("DEMO: Min. Sensitivity - 0.45. Resolution - 0.5 lx. Continuous Mode (no auto power down after measurement)"));
+  Serial.println(F("Light level: "));
   Serial.print(myBH1750.readLightLevel());
-  Serial.println(F(" lx"));
+  Serial.print(F(" lx"));
   
+  /* back to default sensitivity */
   myBH1750.setSensitivity(1);
   
   Serial.println(F("DEMO: Manual Power Down"));
   myBH1750.powerDown();
   
   
-  Serial.print(F("DEMO: Start over again in 5 sec."));
+  Serial.println(F("DEMO: Start over again in 5 sec."));
   delay(5000);
 }
