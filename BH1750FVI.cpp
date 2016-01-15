@@ -289,7 +289,7 @@ void BH1750FVI::write8(uint8_t value)
 #if (ARDUINO >= 100)
   Wire.write(value);
 #else
-  Wire.send(valued);
+  Wire.send(value);
 #endif
   Wire.endTransmission();
 }
