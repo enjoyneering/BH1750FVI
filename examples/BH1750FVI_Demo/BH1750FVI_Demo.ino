@@ -62,43 +62,43 @@ void loop()
   Serial.println(F(""));
   Serial.println(F("DEMO: Default settings"));
   
-  Serial.println(F("Light level: "));
+  Serial.print(F("Light level: "));
   Serial.print(myBH1750.readLightLevel());
-  Serial.print(F(" lx"));
+  Serial.println(F(" lx"));
   
-  Serial.println(F("Power for 555nm: "));
+  Serial.print(F("Power for 555nm: "));
   Serial.print(myBH1750.readLightLevel()/683);
-  Serial.print(F(" Watt/m^2"));
+  Serial.println(F(" Watt/m^2"));
 
   myBH1750.setSensitivity(2);
   
   Serial.println(F("DEMO: Sensitivity - 2.0. Resolution - 0.5 lx. Continuous Mode (no auto power down after the measurement)"));
-  Serial.println(F("Light level: "));
+  Serial.print(F("Light level: "));
   Serial.print(myBH1750.readLightLevel());
-  Serial.print(F(" lx"));
+  Serial.println(F(" lx"));
  
   myBH1750.setSensitivity(0.5);
   
   Serial.println(F("DEMO: Sensitivity - 0.5. Resolution - 0.5 lx. Continuous Mode (no auto power down after the measurement)"));
-  Serial.println(F("Light level: "));
+  Serial.print(F("Light level: "));
   Serial.print(myBH1750.readLightLevel());
-  Serial.print(F(" lx"));
+  Serial.println(F(" lx"));
   
   myBH1750.setSensitivity(3.68);
   myBH1750.setResolution(BH1750_ONE_TIME_HIGH_RES_MODE);
   
   Serial.println(F("DEMO: Max. Sensitivity - 3.68. Resolution - 1.0 lx. Auto Power Down (after the measurement)"));
-  Serial.println(F("Light level: "));
+  Serial.print(F("Light level: "));
   Serial.print(myBH1750.readLightLevel());
-  Serial.print(F(" lx"));
+  Serial.println(F(" lx"));
   
   myBH1750.setSensitivity(0.45);
   myBH1750.setResolution(BH1750_CONTINUOUS_HIGH_RES_MODE_2);
   
   Serial.println(F("DEMO: Min. Sensitivity - 0.45. Resolution - 0.5 lx. Continuous Mode (no auto power down after measurement)"));
-  Serial.println(F("Light level: "));
+  Serial.print(F("Light level: "));
   Serial.print(myBH1750.readLightLevel());
-  Serial.print(F(" lx"));
+  Serial.println(F(" lx"));
   
   /* back to default sensitivity */
   myBH1750.setSensitivity(1);
