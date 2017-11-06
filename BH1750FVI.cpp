@@ -214,7 +214,6 @@ float BH1750FVI::readLightLevel(void)
   }
   delay(integrationTime);
 
-
   do
   {
     pollCounter--;
@@ -223,7 +222,6 @@ float BH1750FVI::readLightLevel(void)
     Wire.requestFrom(_BH1750FVI_Address, 2, true); //true = stop message after transmission & releas the I2C bus  
   }
   while (Wire.available() != 2);                   //check rxBuffer
-
 
   /* reads MSB byte, LSB byte from "wire.h" buffer */
   #if (ARDUINO >= 100)
