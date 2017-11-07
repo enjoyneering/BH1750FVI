@@ -298,7 +298,7 @@ void BH1750FVI::powerOn(void)
 /**************************************************************************/
 void BH1750FVI::write8(uint8_t value)
 {
-  uint8_t pollCounter = BH1750_POLL_LIMIT;
+  int8_t pollCounter = BH1750_POLL_LIMIT;
 
   do
   {
