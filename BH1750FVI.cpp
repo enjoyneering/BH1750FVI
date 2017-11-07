@@ -184,7 +184,7 @@ float BH1750FVI::getSensitivity(void)
 /**************************************************************************/
 float BH1750FVI::readLightLevel(void)
 {
-  uint8_t  pollCounter     = BH1750_POLL_LIMIT;
+  int8_t   pollCounter     = BH1750_POLL_LIMIT;
   uint16_t integrationTime = 0;
   uint16_t rawLightLevel   = 0;
   float    lightLevel      = 0;
