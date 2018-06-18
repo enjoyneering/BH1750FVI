@@ -129,7 +129,7 @@ void loop()
   lcd.print(lightLevel/683);
   lcd.write(LCD_SPACE_SYMBOL);
   lcd.print(F("Watt/m"));
-  lcd.write((uint8_t)0);
+  lcd.write(0);                                                     //print custom char "in_power_two
   lcd.write(LCD_SPACE_SYMBOL);
 
   lcd.printHorizontalGraph('L', 2, lightLevel, LIGHT_LEVEL_OFFICE); //name of the bar, first  row, current value, max. value
