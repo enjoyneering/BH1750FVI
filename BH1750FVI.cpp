@@ -39,15 +39,6 @@
     Constructor
 */
 /**************************************************************************/
-/*
-BH1750FVI::BH1750FVI(BH1750FVI_ADDRESS addr, BH1750FVI_RESOLUTION res, float sensitivity, float calibration)
-{
-  _sensorAddress    = addr;
-  _sensorResolution = res;
-  _sensitivity      = sensitivity;
-  _accuracy         = calibration;
-}
-*/
 BH1750FVI::BH1750FVI(BH1750FVI_ADDRESS addr, BH1750FVI_RESOLUTION res, float sensitivity)
 {
   _sensorAddress    = addr;
