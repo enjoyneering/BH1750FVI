@@ -2,9 +2,8 @@
 /*
   This is an Arduino library for the ROHM BH1750FVI Ambient Light Sensor
 
-  Default range: 1 - 65'535 lx, possible to detect 0.11 - 100'000 lux by changing
-                 sensitivity/integration Time
-
+  Default range: 1 - 65'535 lx
+  
   written by : enjoyneering79
   sourse code: https://github.com/enjoyneering/
 
