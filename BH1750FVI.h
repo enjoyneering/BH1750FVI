@@ -2,116 +2,123 @@
 /*
   This is an Arduino library for the ROHM BH1750FVI Ambient Light Sensor
 
+  Default range: 1 - 65'535 lx, possible to detect 0.11 - 100'000 lux by changing
+                 sensitivity/integration Time
+
   written by : enjoyneering79
   sourse code: https://github.com/enjoyneering/
 
-  Wide range:           1 - 65'535 lx (by default)
-  Possible to detect:   0.11 - 100'000 lx by changing Sensitivity
-
   This sensor uses I2C bus to communicate, specials pins are required to interface
+  Board:                                    SDA                    SCL
+  Uno, Mini, Pro, ATmega168, ATmega328..... A4                     A5
+  Mega2560, Due............................ 20                     21
+  Leonardo, Micro, ATmega32U4.............. 2                      3
+  Digistump, Trinket, ATtiny85............. 0/physical pin no.5    2/physical pin no.7
+  Blue Pill, STM32F103xxxx boards.......... PB7*                   PB6*
+  ESP8266 ESP-01:.......................... GPIO0/D5               GPIO2/D3
+  NodeMCU 1.0, WeMos D1 Mini............... GPIO4/D2               GPIO5/D1
 
-  Connect chip to pins:    SDA        SCL
-  Uno, Mini, Pro:          A4         A5
-  Mega2560, Due:           20         21
-  Leonardo:                2          3
-  ATtiny85:                0(5)       2/A1(7)   (ATTinyCore  - https://github.com/SpenceKonde/ATTinyCore
-                                                 & TinyWireM - https://github.com/SpenceKonde/TinyWireM)
-  ESP8266 ESP-01:          GPIO0/D5   GPIO2/D3  (ESP8266Core - https://github.com/esp8266/Arduino)
-  NodeMCU 1.0:             GPIO4/D2   GPIO5/D1
-  WeMos D1 Mini:           GPIO4/D2   GPIO5/D1
+                                           *STM32F103xxxx pins B7/B7 are 5v tolerant, but bi-directional
+                                            logic level converter is recommended
 
-  BSD license, all text above must be included in any redistribution
+  Frameworks & Libraries:
+  ATtiny Core           - https://github.com/SpenceKonde/ATTinyCore
+  ESP8266 Core          - https://github.com/esp8266/Arduino
+  ESP8266 I2C lib fixed - https://github.com/enjoyneering/ESP8266-I2C-Driver
+  STM32 Core            - https://github.com/rogerclarkmelbourne/Arduino_STM32
+
+  GNU GPL license, all text above must be included in any redistribution, see link below for details:
+  - https://www.gnu.org/licenses/licenses.html
 */
 /***************************************************************************************************/
   
 #ifndef BH1750FVI_h
 #define BH1750FVI_h
 
-#if ARDUINO >= 100
+#if defined(ARDUINO) && ARDUINO >= 100    //arduino core v1.0 or later
 #include <Arduino.h>
 #else
 #include <WProgram.h>
 #endif
 
-#if defined(__AVR_ATtinyX4__) || defined(__AVR_ATtinyX5__) || defined(__AVR_ATtinyX313__)
-#include <TinyWireM.h>
-#define  Wire TinyWireM
-#else
-#include <Wire.h>
-#endif
-
 #if defined(__AVR__)
-#include <avr/pgmspace.h>
+#include <avr/pgmspace.h>                 //use for PROGMEM Arduino AVR
 #elif defined(ESP8266)
-#include <pgmspace.h>
+#include <pgmspace.h>                     //use for PROGMEM Arduino ESP8266
+#elif defined(_VARIANT_ARDUINO_STM32_)
+#include <avr/pgmspace.h>                 //use for PROGMEM Arduino STM32
 #endif
 
+#include <Wire.h>
 
-#define BH1750_POWER_DOWN           0x00  //no active, low power state
+
+#define BH1750_POWER_DOWN           0x00  //low power state
 #define BH1750_POWER_ON             0x01  //wating for measurment command
-#define BH1750_RESET                0x07  //reset only illuminance data register, not accepted in POWER_DOWN mode
+#define BH1750_RESET                0x07  //soft reset
 
-#define BH1750_MEASUREMENT_TIME_H   0x40  //high bit of changing measurement time
-#define BH1750_MEASUREMENT_TIME_L   0x60  //low  bit of changing measurement time
+#define BH1750_MEASUREMENT_TIME_H   0x40  //changing measurement time register MSB bits
+#define BH1750_MEASUREMENT_TIME_L   0x60  //changing measurement time register LSB bits
 
-#define BH1750_MTREG_DEFAULT        0x45  //default integration/measurement time = 69
-#define BH1750_MTREG_MIN            0x1F  //min.    integration/measurement time = 31
-#define BH1750_MTREG_MAX            0xFE  //max.    integration/measurement time = 254
-#define BH1750_SENSITIVITY_MIN      0.45  //min.    sensitivity
-#define BH1750_SENSITIVITY_MAX      3.68  //max.    sensitivity
+#define BH1750_MTREG_DEFAULT        0x45  //default integration/measurement time, 69
+#define BH1750_MTREG_MIN            0x1F  //minimun integration/measurement time, 31
+#define BH1750_MTREG_MAX            0xFE  //maximum integration/measurement time, 254
+#define BH1750_SENSITIVITY_MIN      0.45  //minimun sensitivity
+#define BH1750_SENSITIVITY_MAX      3.68  //maximum sensitivity
 #define BH1750_SENSITIVITY_DEFAULT  1.00  //default sensitivity
 
-#define BH1750_MEASUREMENT_ACCURACY 1.2   //measurement accuracy, for result adjustment/calibration (min - 0.96, max - 1.44, typ - 1.2)
-#define BH1750_POLL_LIMIT           8     //i2c retry limit
+#define BH1750_MEASUREMENT_ACCURACY 1.2   //typical measurement accuracy, sensor calibration
+#define BH1750_POLLING_LIMIT        8     //i2c retry limit
 #define BH1750_ERROR                0x00  //returns 0, if communication error is occurred
 
 
 typedef enum
 {
-BH1750_DEFAULT_I2CADDR = 0x23,            //device Address on i2c serial bus when address pin LOW
-BH1750_SECOND_I2CADDR  = 0x5C             //device Address on i2c serial bus when address pin HIGH
+BH1750_DEFAULT_I2CADDR = 0x23,            //device address on i2c serial bus, address pin LOW
+BH1750_SECOND_I2CADDR  = 0x5C             //device address on i2c serial bus, address pin HIGH
 }
-BH1750FVI_Address;
+BH1750FVI_ADDRESS;
 
 typedef enum
 {
-BH1750_CONTINUOUS_HIGH_RES_MODE   = 0x10, //continuous measurement @ 1.0 lx resolution. Integration time is 120..180ms
-BH1750_CONTINUOUS_HIGH_RES_MODE_2 = 0x11, //continuous measurement @ 0.5 lx resolution. Integration time is 120..180ms
-BH1750_CONTINUOUS_LOW_RES_MODE    = 0x13, //Continuous measurement @ 4.0 lx resolution. Integration time is 16...24ms
+BH1750_CONTINUOUS_HIGH_RES_MODE   = 0x10, //continuous measurement, 1.0 lx resolution
+BH1750_CONTINUOUS_HIGH_RES_MODE_2 = 0x11, //continuous measurement, 0.5 lx resolution
+BH1750_CONTINUOUS_LOW_RES_MODE    = 0x13, //continuous measurement, 4.0 lx resolution
 
-BH1750_ONE_TIME_HIGH_RES_MODE     = 0x20, //one-time measurement with power down @ 1.0 lx resolution. Integration time is 120..180ms
-BH1750_ONE_TIME_HIGH_RES_MODE_2   = 0x21, //one-time measurement with power down @ 0.5 lx resolution. Integration time is 120..180ms
-BH1750_ONE_TIME_LOW_RES_MODE      = 0x23  //one-time measurement with power down @ 4.0 lx resolution. Integration time is 16...24ms
+BH1750_ONE_TIME_HIGH_RES_MODE     = 0x20, //one measurement & power down, 1.0 lx resolution
+BH1750_ONE_TIME_HIGH_RES_MODE_2   = 0x21, //one measurement & power down, 0.5 lx resolution
+BH1750_ONE_TIME_LOW_RES_MODE      = 0x23  //one measurement & power down, 4.0 lx resolution
 }   
-BH1750FVI_Resolution;
+BH1750FVI_RESOLUTION;
 
 class BH1750FVI 
 {
  public:
 
-  BH1750FVI(BH1750FVI_Address = BH1750_DEFAULT_I2CADDR, BH1750FVI_Resolution = BH1750_CONTINUOUS_HIGH_RES_MODE_2, float sensitivity = BH1750_SENSITIVITY_DEFAULT);
+  //BH1750FVI(BH1750FVI_ADDRESS = BH1750_DEFAULT_I2CADDR, BH1750FVI_RESOLUTION = BH1750_CONTINUOUS_HIGH_RES_MODE_2, float sensitivity = BH1750_SENSITIVITY_DEFAULT, float calibration = BH1750_MEASUREMENT_ACCURACY);
+  BH1750FVI(BH1750FVI_ADDRESS = BH1750_DEFAULT_I2CADDR, BH1750FVI_RESOLUTION = BH1750_CONTINUOUS_HIGH_RES_MODE_2, float sensitivity = BH1750_SENSITIVITY_DEFAULT);
 
   #if defined(ESP8266)
   bool  begin(uint8_t sda = SDA, uint8_t scl = SCL);
   #else
   bool  begin(void);
   #endif
-  void 	setResolution(BH1750FVI_Resolution res);
+  void 	setResolution(BH1750FVI_RESOLUTION res);
   void 	setSensitivity(float sensitivity);
   float getSensitivity(void);
   float readLightLevel(void);
   void 	powerDown(void);
+  void  powerOn(void);
   void  reset(void);
+  void  setCalibration(float value);
+  float getCalibration(void);
 
  private:
-  uint8_t _currentMTreg;
-  bool    _powerON;
-  float   _sensitivity;
+  float _sensitivity;
+  float _accuracy;
 
-  BH1750FVI_Resolution _BH1750FVI_Resolution;
-  BH1750FVI_Address    _BH1750FVI_Address;
+  BH1750FVI_RESOLUTION _sensorResolution;
+  BH1750FVI_ADDRESS    _sensorAddress;
 
-  void powerOn(void);
   void write8(uint8_t data);
 };
 
