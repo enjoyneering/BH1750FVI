@@ -3,7 +3,7 @@
   This is an Arduino library for the ROHM BH1750FVI Ambient Light Sensor
 
   Default range: 1 - 65'535 lx
-  
+
   written by : enjoyneering79
   sourse code: https://github.com/enjoyneering/
 
@@ -17,8 +17,8 @@
   ESP8266 ESP-01:.......................... GPIO0/D5               GPIO2/D3
   NodeMCU 1.0, WeMos D1 Mini............... GPIO4/D2               GPIO5/D1
 
-                                           *STM32F103xxxx pins B7/B7 are 5v tolerant, but bi-directional
-                                            logic level converter is recommended
+                                           *STM32F103xxxx pins PB6/PB7 are 5v tolerant, but
+                                            bi-directional logic level converter is recommended
 
   Frameworks & Libraries:
   ATtiny Core           - https://github.com/SpenceKonde/ATTinyCore
@@ -39,6 +39,15 @@
     Constructor
 */
 /**************************************************************************/
+/*
+BH1750FVI::BH1750FVI(BH1750FVI_ADDRESS addr, BH1750FVI_RESOLUTION res, float sensitivity, float calibration)
+{
+  _sensorAddress    = addr;
+  _sensorResolution = res;
+  _sensitivity      = sensitivity;
+  _accuracy         = calibration;
+}
+*/
 BH1750FVI::BH1750FVI(BH1750FVI_ADDRESS addr, BH1750FVI_RESOLUTION res, float sensitivity)
 {
   _sensorAddress    = addr;
@@ -49,15 +58,16 @@ BH1750FVI::BH1750FVI(BH1750FVI_ADDRESS addr, BH1750FVI_RESOLUTION res, float sen
 
 /**************************************************************************/
 /*
-    Initializes I2C and configures the sensor (call this function before
-    doing anything else)
+    Initializes I2C and configures the sensor, call this function before
+    doing anything else
 
-    Wire.endTransmission():
-    0 - success
-    1 - data too long to fit in transmit buffer
-    2 - received NACK on transmit of address
-    3 - received NACK on transmit of data
-    4 - other error
+    NOTE:
+    - Wire.endTransmission() returned value:
+      - 0 success
+      - 1 data too long to fit in transmit data16
+      - 2 received NACK on transmit of address
+      - 3 received NACK on transmit of data
+      - 4 other error
 */
 /**************************************************************************/
 #if defined(ESP8266)
@@ -73,7 +83,7 @@ bool BH1750FVI::begin(void)
   Wire.setClock(100000UL);                           //experimental! AVR i2c bus speed: 31kHz..400kHz/31000UL..400000UL, default 100000UL
 #endif
 
-  Wire.beginTransmission(_sensorAddress);            //safety check - make sure the sensor is connected
+  Wire.beginTransmission(_sensorAddress);            //safety check, make sure the sensor is connected
   if (Wire.endTransmission(true) != 0) return false;
 
   setSensitivity(_sensitivity);
@@ -128,7 +138,7 @@ void BH1750FVI::setSensitivity(float sensitivity)
 
   valueMTreg = BH1750_MTREG_DEFAULT * sensitivity; //calculating MTreg value for new sensitivity
 
-  /* safety check - make sure valueMTreg never exceeds the limits */
+  /* safety check, make sure valueMTreg never exceeds the limits */
   if (valueMTreg < BH1750_MTREG_MIN) 
   {
     valueMTreg   = BH1750_MTREG_MIN;
@@ -186,13 +196,12 @@ float BH1750FVI::getSensitivity(void)
 /**************************************************************************/
 float BH1750FVI::readLightLevel(void)
 {
-  int8_t   pollCounter     = BH1750_POLLING_LIMIT;
   uint16_t integrationTime = 0;
   uint16_t rawLightLevel   = 0;
   float    lightLevel      = 0;
 
   /* send measurement instruction */
-  write8(_sensorResolution);
+  if (write8(_sensorResolution) != true) return BH1750_ERROR; //error handler, collision on the i2c bus
 
   /* measurement delay */
   switch(_sensorResolution)
@@ -215,17 +224,14 @@ float BH1750FVI::readLightLevel(void)
   }
   delay(integrationTime);
 
-  do
-  {
-    if (pollCounter-- == 0) return BH1750_ERROR;   //error handler, collision on the i2c bus
 
-    #if defined(_VARIANT_ARDUINO_STM32_)
-    Wire.requestFrom(_sensorAddress, 2);
-    #else
-    Wire.requestFrom(_sensorAddress, 2, true);     //true = stop message after transmission & releas the I2C bus
-    #endif
-  }
-  while (Wire.available() != 2);                   //check rxBuffer
+  #if defined(_VARIANT_ARDUINO_STM32_)
+  Wire.requestFrom(_sensorAddress, 2);
+  #else
+  Wire.requestFrom(_sensorAddress, 2, true);       //true, stop message after transmission & releas the I2C bus
+  #endif
+
+  if (Wire.available() != 2) return BH1750_ERROR;  //check rxBuffer & error handler, collision on the i2c bus
 
   /* reads MSB byte, LSB byte from "wire.h" rxBuffer */
   #if (ARDUINO >= 100)
@@ -295,7 +301,7 @@ void BH1750FVI::reset(void)
 /**************************************************************************/
 void BH1750FVI::setCalibration(float value)
 {
-  /* safety check - make sure value never exceeds calibration range */
+  /* safety check, make sure value never exceeds calibration range */
   if      (value < 0.96) _accuracy = 0.96;
   else if (value > 1.44) _accuracy = 1.44;
   else                   _accuracy = value;
@@ -319,21 +325,16 @@ float BH1750FVI::getCalibration(void)
     Writes 8-bit value over I2C
 */
 /**************************************************************************/
-void BH1750FVI::write8(uint8_t value)
+bool BH1750FVI::write8(uint8_t value)
 {
-  int8_t pollCounter = BH1750_POLLING_LIMIT;
+  Wire.beginTransmission(_sensorAddress);
 
-  do
-  {
-    pollCounter--;
-
-    Wire.beginTransmission(_sensorAddress);
-
-    #if (ARDUINO >= 100)
-    Wire.write(value);
-    #else
-    Wire.send(value);
-    #endif
-  }
-  while ((Wire.endTransmission(true) != 0) || (pollCounter > 0));
+  #if (ARDUINO >= 100)
+  Wire.write(value);
+  #else
+  Wire.send(value);
+  #endif
+  
+  if (Wire.endTransmission(true) == 0) return true;
+                                       return false;
 }
