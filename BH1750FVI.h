@@ -3,7 +3,7 @@
   This is an Arduino library for the ROHM BH1750FVI Ambient Light Sensor
 
   Default range: 1 - 65'535 lx
-  
+
   written by : enjoyneering79
   sourse code: https://github.com/enjoyneering/
 
@@ -17,8 +17,8 @@
   ESP8266 ESP-01:.......................... GPIO0/D5               GPIO2/D3
   NodeMCU 1.0, WeMos D1 Mini............... GPIO4/D2               GPIO5/D1
 
-                                           *STM32F103xxxx pins B7/B7 are 5v tolerant, but bi-directional
-                                            logic level converter is recommended
+                                           *STM32F103xxxx pins PB6/PB7 are 5v tolerant, but
+                                            bi-directional logic level converter is recommended
 
   Frameworks & Libraries:
   ATtiny Core           - https://github.com/SpenceKonde/ATTinyCore
@@ -92,7 +92,8 @@ BH1750FVI_RESOLUTION;
 class BH1750FVI 
 {
  public:
-  
+
+  //BH1750FVI(BH1750FVI_ADDRESS = BH1750_DEFAULT_I2CADDR, BH1750FVI_RESOLUTION = BH1750_CONTINUOUS_HIGH_RES_MODE_2, float sensitivity = BH1750_SENSITIVITY_DEFAULT, float calibration = BH1750_MEASUREMENT_ACCURACY);
   BH1750FVI(BH1750FVI_ADDRESS = BH1750_DEFAULT_I2CADDR, BH1750FVI_RESOLUTION = BH1750_CONTINUOUS_HIGH_RES_MODE_2, float sensitivity = BH1750_SENSITIVITY_DEFAULT);
 
   #if defined(ESP8266)
@@ -117,7 +118,7 @@ class BH1750FVI
   BH1750FVI_RESOLUTION _sensorResolution;
   BH1750FVI_ADDRESS    _sensorAddress;
 
-  void write8(uint8_t data);
+  bool write8(uint8_t data);
 };
 
 #endif
