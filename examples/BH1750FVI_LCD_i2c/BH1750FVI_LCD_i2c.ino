@@ -17,8 +17,8 @@
   ESP8266 ESP-01:.......................... GPIO0/D5               GPIO2/D3
   NodeMCU 1.0, WeMos D1 Mini............... GPIO4/D2               GPIO5/D1
 
-                                           *STM32F103xxxx pins B7/B7 are 5v tolerant, but bi-directional
-                                            logic level converter is recommended
+                                           *STM32F103xxxx pins PB6/PB7 are 5v tolerant, but
+                                            bi-directional logic level converter is recommended
 
   Frameworks & Libraries:
   ATtiny Core           - https://github.com/SpenceKonde/ATTinyCore
@@ -30,7 +30,7 @@
   - https://www.gnu.org/licenses/licenses.html
 */
 /***************************************************************************************************/
-#include <Wire.h>                //https://github.com/enjoyneering/ESP8266-I2C-Driver
+#include <Wire.h>                //for esp8266 use bug free i2c driver https://github.com/enjoyneering/ESP8266-I2C-Driver
 #include <BH1750FVI.h>
 #include <LiquidCrystal_I2C.h>   //https://github.com/enjoyneering/LiquidCrystal_I2C
 
@@ -47,7 +47,7 @@ const uint8_t in_power_two[8] PROGMEM = {0x1C, 0x04, 0x08, 0x10, 0x1C, 0x00, 0x0
 float lightLevel = 0;
 
 /*
-BH1750FVI(address, resolution, sensitivity)
+BH1750FVI(address, resolution, sensitivity, accuracy)
 
 BH1750_DEFAULT_I2CADDR            - address pin LOW
 BH1750_SECOND_I2CADDR             - address pin HIGH
@@ -59,9 +59,10 @@ BH1750_ONE_TIME_HIGH_RES_MODE     - one measurement & power down, 1.0 lx resolut
 BH1750_ONE_TIME_HIGH_RES_MODE_2   - one measurement & power down, 0.5 lx resolution
 BH1750_ONE_TIME_LOW_RES_MODE      - one measurement & power down, 4.0 lx resolution
 
-sensitivity                       - value have to be between 0.45 - 3.68, default 1.00
+sensitivity                       - value have to be between 0.45 - 3.68, default 1.00 or use macros BH1750_SENSITIVITY_DEFAULT
+accuracy                          - value have to be between 0.96 - 1.44, default 1.20 or use macros BH1750_ACCURACY_DEFAULT
 */
-BH1750FVI         myBH1750(BH1750_DEFAULT_I2CADDR, BH1750_CONTINUOUS_HIGH_RES_MODE_2, 1.00);
+BH1750FVI         myBH1750(BH1750_DEFAULT_I2CADDR, BH1750_CONTINUOUS_HIGH_RES_MODE_2, BH1750_SENSITIVITY_DEFAULT, BH1750_ACCURACY_DEFAULT);
 LiquidCrystal_I2C lcd(PCF8574_ADDR_A21_A11_A01, 4, 5, 6, 16, 11, 12, 13, 14, POSITIVE);
 
 
