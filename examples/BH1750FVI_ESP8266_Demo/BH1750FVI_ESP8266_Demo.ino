@@ -61,7 +61,7 @@ void setup()
   Serial.begin(115200);
   Serial.println();
 
-  while (myBH1750.begin(D2, D1) != true)
+  while (myBH1750.begin(D2, D1) != true)                //SDA - D2, SCL - D1
   {
     Serial.println(F("ROHM BH1750FVI is not present")); //(F()) saves string to flash & keeps dynamic memory free
     delay(5000);
