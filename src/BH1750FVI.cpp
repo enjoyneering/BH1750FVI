@@ -89,14 +89,14 @@ bool BH1750FVI::begin(void)
     Sets sensor Resolution
 
     Continuous Mode:
-    BH1750_CONTINUOUS_HIGH_RES_MODE   - 1.0 lx resolution. Integration time 180ms
-    BH1750_CONTINUOUS_HIGH_RES_MODE_2 - 0.5 lx resolution. Integration time 180ms (by default)
-    BH1750_CONTINUOUS_LOW_RES_MODE    - 4.0 lx resolution. Integration time 24ms
+    BH1750_CONTINUOUS_HIGH_RES_MODE   - 1.0 lx resolution
+    BH1750_CONTINUOUS_HIGH_RES_MODE_2 - 0.5 lx resolution, by default
+    BH1750_CONTINUOUS_LOW_RES_MODE    - 4.0 lx resolution
     
-    One time mode (power down after the measurement):
-    BH1750_ONE_TIME_HIGH_RES_MODE   - 1.0 lx resolution. Integration time 180ms
-    BH1750_ONE_TIME_HIGH_RES_MODE_2 - 0.5 lx resolution. Integration time 180ms
-    BH1750_ONE_TIME_LOW_RES_MODE    - 4.0 lx resolution. Integration time 24ms
+    One time mode, one measurement & power down:
+    BH1750_ONE_TIME_HIGH_RES_MODE     - 1.0 lx resolution
+    BH1750_ONE_TIME_HIGH_RES_MODE_2   - 0.5 lx resolution, by default
+    BH1750_ONE_TIME_LOW_RES_MODE      - 4.0 lx resolution
 
     NOTE:
     - possible to detect 0.23 lx in H-resolution  mode with max. sesitivity 3.68
@@ -124,10 +124,10 @@ void BH1750FVI::setResolution(BH1750FVI_RESOLUTION res)
 /**************************************************************************/
 bool BH1750FVI::setSensitivity(float sensitivity)
 {
+  float   oldSensitivity        = 0;
   uint8_t valueMTreg            = 0;
   uint8_t measurnentTimeHighBit = 0;
   uint8_t measurnentTimeLowBit  = 0;
-  float   oldSensitivity        = 0;
 
   oldSensitivity = _sensitivity;                   //backup current sensitivity
   
