@@ -66,7 +66,6 @@
 #define BH1750_SENSITIVITY_DEFAULT  1.00  //default sensitivity
 
 #define BH1750_ACCURACY_DEFAULT     1.2   //typical measurement accuracy, sensor calibration
-#define BH1750_POLLING_LIMIT        8     //i2c retry limit
 #define BH1750_ERROR                0x00  //returns 0, if communication error is occurred
 
 
