@@ -224,7 +224,6 @@ float BH1750FVI::readLightLevel(void)
   }
   delay(integrationTime);
 
-
   #if defined(_VARIANT_ARDUINO_STM32_)
   Wire.requestFrom(_sensorAddress, 2);
   #else
