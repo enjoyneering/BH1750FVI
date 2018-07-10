@@ -119,7 +119,7 @@ void BH1750FVI::setResolution(BH1750FVI_RESOLUTION res)
 
     NOTE:
     - sensitivity 0.45 - 3.68, default 1.00
-    - measurement time register 31 - 254, default 69
+    - MTreg/measurement time register 31 - 254, default 69
 */
 /**************************************************************************/
 void BH1750FVI::setSensitivity(float sensitivity)
@@ -127,7 +127,10 @@ void BH1750FVI::setSensitivity(float sensitivity)
   uint8_t valueMTreg            = 0;
   uint8_t measurnentTimeHighBit = 0;
   uint8_t measurnentTimeLowBit  = 0;
+  float   oldSensitivity        = 0;
 
+  oldSensitivity = _sensitivity;                   //backup current sensitivity
+  
   valueMTreg = BH1750_MTREG_DEFAULT * sensitivity; //calculating MTreg value for new sensitivity
 
   /* safety check, make sure valueMTreg never exceeds the limits */
@@ -158,9 +161,11 @@ void BH1750FVI::setSensitivity(float sensitivity)
   measurnentTimeLowBit >>= 3;
   measurnentTimeLowBit |= BH1750_MEASUREMENT_TIME_L;
 
-  /* update the sensor Measurment Timer register */
-  write8(measurnentTimeHighBit);
-  write8(measurnentTimeLowBit);
+  /* update sensor Measurment Timer register */
+  if ((write8(measurnentTimeHighBit) != true) || (write8(measurnentTimeLowBit) != true))
+  {
+    _sensitivity = oldSensitivity; //collision on the i2c bus, use old value
+  }
 }
 
 /**************************************************************************/
@@ -223,7 +228,7 @@ float BH1750FVI::readLightLevel(void)
   Wire.requestFrom(_sensorAddress, 2, true);       //true, stop message after transmission & releas the I2C bus
   #endif
 
-  if (Wire.available() != 2) return BH1750_ERROR;  //check rxBuffer & error handler, collision on the i2c bus
+  if (Wire.available() != 2) return BH1750_ERROR;  //check "wire.h" rxBuffer & error handler, collision on the i2c bus
 
   /* reads MSB byte, LSB byte from "wire.h" rxBuffer */
   #if (ARDUINO >= 100)
