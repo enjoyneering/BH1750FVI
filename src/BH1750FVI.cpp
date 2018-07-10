@@ -122,7 +122,7 @@ void BH1750FVI::setResolution(BH1750FVI_RESOLUTION res)
     - MTreg/measurement time register 31 - 254, default 69
 */
 /**************************************************************************/
-void BH1750FVI::setSensitivity(float sensitivity)
+bool BH1750FVI::setSensitivity(float sensitivity)
 {
   uint8_t valueMTreg            = 0;
   uint8_t measurnentTimeHighBit = 0;
@@ -165,7 +165,10 @@ void BH1750FVI::setSensitivity(float sensitivity)
   if ((write8(measurnentTimeHighBit) != true) || (write8(measurnentTimeLowBit) != true))
   {
     _sensitivity = oldSensitivity; //collision on the i2c bus, use old value
+    return false;
   }
+
+  return true;
 }
 
 /**************************************************************************/
