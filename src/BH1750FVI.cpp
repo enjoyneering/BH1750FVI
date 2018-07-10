@@ -271,7 +271,8 @@ void BH1750FVI::powerOn(void)
     Resets the sensor
 
     NOTE:
-    - reset only illuminance data register/removes measurement result
+    - used for removing previous measurement, reset only illuminance
+      data register
     - not accepted in power-down mode
 */
 /**************************************************************************/
