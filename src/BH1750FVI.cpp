@@ -154,12 +154,12 @@ bool BH1750FVI::setSensitivity(float sensitivity)
 
   /* high bit manipulation */
   measurnentTimeHighBit >>= 5;
-  measurnentTimeHighBit |= BH1750_MEASUREMENT_TIME_H;
+  measurnentTimeHighBit |= BH1750_MEASUREMENT_TIME_H; //0,1,0,0  0,7-bit,6-bit,5-bit
 
   /* low bit manipulation */
   measurnentTimeLowBit <<= 3;
   measurnentTimeLowBit >>= 3;
-  measurnentTimeLowBit |= BH1750_MEASUREMENT_TIME_L;
+  measurnentTimeLowBit |= BH1750_MEASUREMENT_TIME_L; //0,1,1,4-bit  3-bit,2-bit,1-bit,0-bit
 
   /* update sensor Measurment Timer register */
   if ((write8(measurnentTimeHighBit) != true) || (write8(measurnentTimeLowBit) != true))
