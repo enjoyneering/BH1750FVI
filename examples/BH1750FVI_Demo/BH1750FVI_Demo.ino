@@ -109,7 +109,7 @@ void loop()
 
 
   /* DEMO - 5 */
-  Serial.println(F("DEMO 5: Sensitivity - 0.45, Power Down High Res II Mode"));
+  Serial.println(F("DEMO 5: Sensitivity - 0.45, Continuous High Res II Mode"));
   myBH1750.setSensitivity(0.45);
   myBH1750.setResolution(BH1750_CONTINUOUS_HIGH_RES_MODE_2);
 
