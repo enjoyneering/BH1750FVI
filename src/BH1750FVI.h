@@ -102,11 +102,11 @@ class BH1750FVI
   #else
   bool  begin(void);
   #endif
-  void 	setResolution(BH1750FVI_RESOLUTION res);
-  bool 	setSensitivity(float sensitivity);
+  void  setResolution(BH1750FVI_RESOLUTION res);
+  bool  setSensitivity(float sensitivity);
   float getSensitivity(void);
   float readLightLevel(void);
-  void 	powerDown(void);
+  void  powerDown(void);
   void  powerOn(void);
   void  reset(void);
   void  setCalibration(float value);
