@@ -2,26 +2,29 @@
 /*
   This is an Arduino library for the ROHM BH1750FVI Ambient Light Sensor
 
-  Default range: 1 - 65'535 lx
+  Power supply voltage: 2.4 - 3.6v
+  Defaul range:         1 - 65'535 lux
+  Measurement accuracy: ±20%, possible to calibrate
+  Peak wave length:     560nm, yellow-green
 
   written by : enjoyneering79
   sourse code: https://github.com/enjoyneering/
 
-  This sensor uses I2C bus to communicate, specials pins are required to interface
-  Board:                                    SDA                    SCL
-  Uno, Mini, Pro, ATmega168, ATmega328..... A4                     A5
-  Mega2560, Due............................ 20                     21
-  Leonardo, Micro, ATmega32U4.............. 2                      3
-  Digistump, Trinket, ATtiny85............. 0/physical pin no.5    2/physical pin no.7
-  Blue Pill, STM32F103xxxx boards.......... PB7*                   PB6*
-  ESP8266 ESP-01:.......................... GPIO0/D5               GPIO2/D3
-  NodeMCU 1.0, WeMos D1 Mini............... GPIO4/D2               GPIO5/D1
-
-                                           *STM32F103xxxx pins PB6/PB7 are 5v tolerant, but
-                                            bi-directional logic level converter is recommended
+  This chip uses I2C bus to communicate, specials pins are required to interface
+  Board:                                    SDA                    SCL                    Level
+  Uno, Mini, Pro, ATmega168, ATmega328..... A4                     A5                     5v
+  Mega2560................................. 20                     21                     5v
+  Due, SAM3X8E............................. 20                     21                     3.3v
+  Leonardo, Micro, ATmega32U4.............. 2                      3                      5v
+  Digistump, Trinket, ATtiny85............. 0/physical pin no.5    2/physical pin no.7    5v
+  Blue Pill, STM32F103xxxx boards.......... PB7                    PB6                    3.3v/5v
+  ESP8266 ESP-01........................... GPIO0/D5               GPIO2/D3               3.3v/5v
+  NodeMCU 1.0, WeMos D1 Mini............... GPIO4/D2               GPIO5/D1               3.3v/5v
+  ESP32.................................... GPIO21/D21             GPIO22/D22             3.3v
 
   Frameworks & Libraries:
   ATtiny Core           - https://github.com/SpenceKonde/ATTinyCore
+  ESP32 Core            - https://github.com/espressif/arduino-esp32
   ESP8266 Core          - https://github.com/esp8266/Arduino
   ESP8266 I2C lib fixed - https://github.com/enjoyneering/ESP8266-I2C-Driver
   STM32 Core            - https://github.com/rogerclarkmelbourne/Arduino_STM32
@@ -66,13 +69,13 @@ BH1750FVI::BH1750FVI(BH1750FVI_ADDRESS addr, BH1750FVI_RESOLUTION res, float sen
 bool BH1750FVI::begin(uint8_t sda, uint8_t scl)
 {
   Wire.begin(sda, scl);
-  Wire.setClock(100000UL);                           //experimental! ESP8266 i2c bus speed: 100kHz..400kHz/100000UL..400000UL, default 100000UL
+  Wire.setClock(100000);                             //experimental! ESP8266 i2c bus speed: 50kHz..400kHz/50000..400000, default 100000
   Wire.setClockStretchLimit(230);                    //experimental! default 230
 #else
 bool BH1750FVI::begin(void) 
 {
   Wire.begin();
-  Wire.setClock(100000UL);                           //experimental! AVR i2c bus speed: 31kHz..400kHz/31000UL..400000UL, default 100000UL
+  Wire.setClock(100000);                             //experimental! AVR i2c bus speed: 31kHz..400kHz/31000..400000, default 100000
 #endif
 
   Wire.beginTransmission(_sensorAddress);            //safety check, make sure the sensor is connected
@@ -314,7 +317,7 @@ float BH1750FVI::getCalibration(void)
 
 /**************************************************************************/
 /*
-    Writes 8-bit value over I2C
+    Writes 8-bits value over I2C
 */
 /**************************************************************************/
 bool BH1750FVI::write8(uint8_t value)
