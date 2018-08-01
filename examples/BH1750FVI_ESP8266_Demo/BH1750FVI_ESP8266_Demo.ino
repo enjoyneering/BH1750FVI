@@ -3,7 +3,7 @@
   Example for ROHM BH1750FVI Ambient Light Sensor library
 
   Power supply voltage: 2.4 - 3.6v
-  Defaul range:         1 - 65'535 lux
+  Default range:        1 - 65'535 lux
   Measurement accuracy: ±20%, possible to calibrate
   Peak wave length:     560nm, yellow-green
 
