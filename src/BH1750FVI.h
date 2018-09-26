@@ -1,54 +1,53 @@
 /***************************************************************************************************/
 /*
-  This is an Arduino library for the ROHM BH1750FVI Ambient Light Sensor
+   This is an Arduino library for the ROHM BH1750FVI Ambient Light Sensor
 
-  Power supply voltage: 2.4 - 3.6v
-  Default range:        1 - 65'535 lux
-  Measurement accuracy: ±20%, possible to calibrate
-  Peak wave length:     560nm, yellow-green
+   Power supply voltage: 2.4 - 3.6v
+   Default range:        1 - 65'535 lux
+   Measurement accuracy: ±20%, possible to calibrate
+   Peak wave length:     560nm, yellow-green
 
-  written by : enjoyneering79
-  sourse code: https://github.com/enjoyneering/
+   written by : enjoyneering79
+   sourse code: https://github.com/enjoyneering/
 
-  This chip uses I2C bus to communicate, specials pins are required to interface
-  Board:                                    SDA                    SCL                    Level
-  Uno, Mini, Pro, ATmega168, ATmega328..... A4                     A5                     5v
-  Mega2560................................. 20                     21                     5v
-  Due, SAM3X8E............................. 20                     21                     3.3v
-  Leonardo, Micro, ATmega32U4.............. 2                      3                      5v
-  Digistump, Trinket, ATtiny85............. 0/physical pin no.5    2/physical pin no.7    5v
-  Blue Pill, STM32F103xxxx boards.......... PB7                    PB6                    3.3v/5v
-  ESP8266 ESP-01........................... GPIO0/D5               GPIO2/D3               3.3v/5v
-  NodeMCU 1.0, WeMos D1 Mini............... GPIO4/D2               GPIO5/D1               3.3v/5v
-  ESP32.................................... GPIO21/D21             GPIO22/D22             3.3v
+   This chip uses I2C bus to communicate, specials pins are required to interface
+   Board:                                    SDA                    SCL                    Level
+   Uno, Mini, Pro, ATmega168, ATmega328..... A4                     A5                     5v
+   Mega2560................................. 20                     21                     5v
+   Due, SAM3X8E............................. 20                     21                     3.3v
+   Leonardo, Micro, ATmega32U4.............. 2                      3                      5v
+   Digistump, Trinket, ATtiny85............. 0/physical pin no.5    2/physical pin no.7    5v
+   Blue Pill, STM32F103xxxx boards.......... PB7                    PB6                    3.3v/5v
+   ESP8266 ESP-01........................... GPIO0/D5               GPIO2/D3               3.3v/5v
+   NodeMCU 1.0, WeMos D1 Mini............... GPIO4/D2               GPIO5/D1               3.3v/5v
+   ESP32.................................... GPIO21/D21             GPIO22/D22             3.3v
 
-  Frameworks & Libraries:
-  ATtiny Core           - https://github.com/SpenceKonde/ATTinyCore
-  ESP32 Core            - https://github.com/espressif/arduino-esp32
-  ESP8266 Core          - https://github.com/esp8266/Arduino
-  ESP8266 I2C lib fixed - https://github.com/enjoyneering/ESP8266-I2C-Driver
-  STM32 Core            - https://github.com/rogerclarkmelbourne/Arduino_STM32
+   Frameworks & Libraries:
+   ATtiny  Core          - https://github.com/SpenceKonde/ATTinyCore
+   ESP32   Core          - https://github.com/espressif/arduino-esp32
+   ESP8266 Core          - https://github.com/esp8266/Arduino
+   STM32   Core          - https://github.com/rogerclarkmelbourne/Arduino_STM32
 
-  GNU GPL license, all text above must be included in any redistribution, see link below for details:
-  - https://www.gnu.org/licenses/licenses.html
+   GNU GPL license, all text above must be included in any redistribution,
+   see link for details  - https://www.gnu.org/licenses/licenses.html
 */
 /***************************************************************************************************/
   
 #ifndef BH1750FVI_h
 #define BH1750FVI_h
 
-#if defined(ARDUINO) && ARDUINO >= 100    //arduino core v1.0 or later
+#if defined(ARDUINO) && ((ARDUINO) >= 100) //arduino core v1.0 or later
 #include <Arduino.h>
 #else
 #include <WProgram.h>
 #endif
 
 #if defined(__AVR__)
-#include <avr/pgmspace.h>                 //use for PROGMEM Arduino AVR
+#include <avr/pgmspace.h>                  //use for PROGMEM Arduino AVR
 #elif defined(ESP8266)
-#include <pgmspace.h>                     //use for PROGMEM Arduino ESP8266
+#include <pgmspace.h>                      //use for PROGMEM Arduino ESP8266
 #elif defined(_VARIANT_ARDUINO_STM32_)
-#include <avr/pgmspace.h>                 //use for PROGMEM Arduino STM32
+#include <avr/pgmspace.h>                  //use for PROGMEM Arduino STM32
 #endif
 
 #include <Wire.h>
@@ -72,14 +71,14 @@
 #define BH1750_ERROR                0x00  //returns 0, if communication error is occurred
 
 
-typedef enum
+typedef enum : uint8_t
 {
 BH1750_DEFAULT_I2CADDR = 0x23,            //device i2c address if address pin LOW
 BH1750_SECOND_I2CADDR  = 0x5C             //device i2c address if address pin HIGH
 }
 BH1750FVI_ADDRESS;
 
-typedef enum
+typedef enum : uint8_t
 {
 BH1750_CONTINUOUS_HIGH_RES_MODE   = 0x10, //continuous measurement, 1.0 lx resolution
 BH1750_CONTINUOUS_HIGH_RES_MODE_2 = 0x11, //continuous measurement, 0.5 lx resolution
