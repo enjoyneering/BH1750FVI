@@ -1,4 +1,4 @@
-[![license-badge][]][license] ![version] [![stars][]][stargazers] [![GitHub issues][]][issues]
+[![license-badge][]][license] ![version] [![stars][]][stargazers] [![hit-count][]][count] [![github-issues][]][issues]
 
 # ROHM BH1750FVI
 This is an Arduino library for ROHM BH1750FVI Ambient Light Sensor
@@ -33,5 +33,7 @@ Tested on:
 [version]:       https://img.shields.io/badge/Version-1.2.3-green.svg
 [stars]:         https://img.shields.io/github/stars/enjoyneering/BH1750FVI.svg
 [stargazers]:    https://github.com/enjoyneering/BH1750FVI/stargazers
-[GitHub issues]: https://img.shields.io/github/issues/enjoyneering/BH1750FVI.svg
+[hit-count]:     http://hits.dwyl.io/enjoyneering/BH1750FVI.svg
+[count]:         http://hits.dwyl.io/enjoyneering/BH1750FVI/badges
+[github-issues]: https://img.shields.io/github/issues/enjoyneering/BH1750FVI.svg
 [issues]:        https://github.com/enjoyneering/BH1750FVI/issues/
