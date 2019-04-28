@@ -10,6 +10,7 @@
    written by : enjoyneering79
    sourse code: https://github.com/enjoyneering/
 
+
    This chip uses I2C bus to communicate, specials pins are required to interface
    Board:                                    SDA                    SCL                    Level
    Uno, Mini, Pro, ATmega168, ATmega328..... A4                     A5                     5v
@@ -23,10 +24,11 @@
    ESP32.................................... GPIO21/D21             GPIO22/D22             3.3v
 
    Frameworks & Libraries:
-   ATtiny  Core          - https://github.com/SpenceKonde/ATTinyCore
-   ESP32   Core          - https://github.com/espressif/arduino-esp32
+   ATtiny Core           - https://github.com/SpenceKonde/ATTinyCore
+   ESP32 Core            - https://github.com/espressif/arduino-esp32
    ESP8266 Core          - https://github.com/esp8266/Arduino
-   STM32   Core          - https://github.com/rogerclarkmelbourne/Arduino_STM32
+   ESP8266 I2C lib fixed - https://github.com/enjoyneering/ESP8266-I2C-Driver
+   STM32 Core            - https://github.com/rogerclarkmelbourne/Arduino_STM32
 
    GNU GPL license, all text above must be included in any redistribution,
    see link for details  - https://www.gnu.org/licenses/licenses.html
@@ -92,7 +94,7 @@ bool BH1750FVI::begin(void)
 
     Continuous Mode:
     BH1750_CONTINUOUS_HIGH_RES_MODE   - 1.0 lx resolution
-    BH1750_CONTINUOUS_HIGH_RES_MODE_2 - 0.5 lx resolution, by default
+    BH1750_CONTINUOUS_HIGH_RES_MODE_2 - 0.5 lx resolution
     BH1750_CONTINUOUS_LOW_RES_MODE    - 4.0 lx resolution
     
     One time mode, one measurement & power down:
@@ -131,9 +133,9 @@ bool BH1750FVI::setSensitivity(float sensitivity)
   uint8_t measurnentTimeHighBit = 0;
   uint8_t measurnentTimeLowBit  = 0;
 
-  oldSensitivity = _sensitivity;                   //backup current sensitivity
+  oldSensitivity = _sensitivity;                      //backup current sensitivity
   
-  valueMTreg = BH1750_MTREG_DEFAULT * sensitivity; //calculating MTreg value for new sensitivity
+  valueMTreg = BH1750_MTREG_DEFAULT * sensitivity;    //calculating MTreg value for new sensitivity
 
   /* safety check, make sure valueMTreg never exceeds the limits */
   if (valueMTreg < BH1750_MTREG_MIN) 
@@ -161,12 +163,12 @@ bool BH1750FVI::setSensitivity(float sensitivity)
   /* low bit manipulation */
   measurnentTimeLowBit <<= 3;
   measurnentTimeLowBit >>= 3;
-  measurnentTimeLowBit |= BH1750_MEASUREMENT_TIME_L; //0,1,1,4-bit  3-bit,2-bit,1-bit,0-bit
+  measurnentTimeLowBit |= BH1750_MEASUREMENT_TIME_L;  //0,1,1,4-bit  3-bit,2-bit,1-bit,0-bit
 
   /* update sensor Measurment Timer register */
   if ((write8(measurnentTimeHighBit) != true) || (write8(measurnentTimeLowBit) != true))
   {
-    _sensitivity = oldSensitivity; //collision on the i2c bus, use old value
+    _sensitivity = oldSensitivity;                    //collision on the i2c bus, use old value
     return false;
   }
 
@@ -192,8 +194,8 @@ float BH1750FVI::getSensitivity(void)
 
     NOTE:
     - measurement/integration time for "H2" and "H" resolution modes is so
-     long, so almost any noises including 50Hz/60Hz light fluctuation
-     is rejected.
+      long, so almost any noises including 50Hz/60Hz light fluctuation
+      is rejected.
 */
 /**************************************************************************/
 float BH1750FVI::readLightLevel(void)
@@ -209,11 +211,11 @@ float BH1750FVI::readLightLevel(void)
   switch(_sensorResolution)
   {
     case BH1750_CONTINUOUS_HIGH_RES_MODE: case BH1750_CONTINUOUS_HIGH_RES_MODE_2: case BH1750_ONE_TIME_HIGH_RES_MODE: case BH1750_ONE_TIME_HIGH_RES_MODE_2:
-      integrationTime = 180 * _sensitivity;        //120..180ms * (0.45 .. 3.68) 
+      integrationTime = 180.0 * _sensitivity; //120..180ms * (0.45 .. 3.68) 
       break;
 
     case BH1750_CONTINUOUS_LOW_RES_MODE:  case BH1750_ONE_TIME_LOW_RES_MODE:
-      integrationTime = 24 * _sensitivity;         //16..24ms * (0.45 .. 3.68)
+      integrationTime = 24.0 * _sensitivity;  //16..24ms * (0.45 .. 3.68)
       break;
   }
   delay(integrationTime);
@@ -221,10 +223,10 @@ float BH1750FVI::readLightLevel(void)
   #if defined(_VARIANT_ARDUINO_STM32_)
   Wire.requestFrom(_sensorAddress, 2);
   #else
-  Wire.requestFrom(_sensorAddress, 2, true);       //true, stop message after transmission & releas the I2C bus
+  Wire.requestFrom(_sensorAddress, 2, true);      //true, stop message after transmission & releas the I2C bus
   #endif
 
-  if (Wire.available() != 2) return BH1750_ERROR;  //check "wire.h" rxBuffer & error handler, collision on the i2c bus
+  if (Wire.available() != 2) return BH1750_ERROR; //check "wire.h" rxBuffer & error handler, collision on the i2c bus
 
   /* reads MSB byte, LSB byte from "wire.h" rxBuffer */
   #if (ARDUINO >= 100)
@@ -236,13 +238,14 @@ float BH1750FVI::readLightLevel(void)
   #endif
 
   /* light level calculation */
-  if ((_sensorResolution == BH1750_CONTINUOUS_HIGH_RES_MODE_2) || (_sensorResolution == BH1750_ONE_TIME_HIGH_RES_MODE_2))
+  switch (_sensorResolution)
   {
-    lightLevel = 0.5 * _sensitivity * (float)rawLightLevel / _accuracy;
-  }
-  else
-  {
-    lightLevel = _sensitivity * (float)rawLightLevel / _accuracy;
+    case BH1750_CONTINUOUS_HIGH_RES_MODE_2: case BH1750_ONE_TIME_HIGH_RES_MODE_2:
+      lightLevel = 0.5 * _sensitivity * (float)rawLightLevel / _accuracy;
+      break;
+    case BH1750_CONTINUOUS_HIGH_RES_MODE: case BH1750_CONTINUOUS_LOW_RES_MODE: case BH1750_ONE_TIME_HIGH_RES_MODE: case BH1750_ONE_TIME_LOW_RES_MODE:
+      lightLevel = _sensitivity * (float)rawLightLevel / _accuracy;
+      break;
   }
 
   return lightLevel;
