@@ -10,6 +10,7 @@
    written by : enjoyneering79
    sourse code: https://github.com/enjoyneering/
 
+
    This chip uses I2C bus to communicate, specials pins are required to interface
    Board:                                    SDA                    SCL                    Level
    Uno, Mini, Pro, ATmega168, ATmega328..... A4                     A5                     5v
@@ -23,10 +24,11 @@
    ESP32.................................... GPIO21/D21             GPIO22/D22             3.3v
 
    Frameworks & Libraries:
-   ATtiny  Core          - https://github.com/SpenceKonde/ATTinyCore
-   ESP32   Core          - https://github.com/espressif/arduino-esp32
+   ATtiny Core           - https://github.com/SpenceKonde/ATTinyCore
+   ESP32 Core            - https://github.com/espressif/arduino-esp32
    ESP8266 Core          - https://github.com/esp8266/Arduino
-   STM32   Core          - https://github.com/rogerclarkmelbourne/Arduino_STM32
+   ESP8266 I2C lib fixed - https://github.com/enjoyneering/ESP8266-I2C-Driver
+   STM32 Core            - https://github.com/rogerclarkmelbourne/Arduino_STM32
 
    GNU GPL license, all text above must be included in any redistribution,
    see link for details  - https://www.gnu.org/licenses/licenses.html
