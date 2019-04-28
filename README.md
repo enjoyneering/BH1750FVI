@@ -30,7 +30,7 @@ Tested on:
 
 [license-badge]: https://img.shields.io/badge/License-GPLv3-blue.svg
 [license]:       https://choosealicense.com/licenses/gpl-3.0/
-[version]:       https://img.shields.io/badge/Version-1.2.3-green.svg
+[version]:       https://img.shields.io/badge/Version-1.2.4-green.svg
 [stars]:         https://img.shields.io/github/stars/enjoyneering/BH1750FVI.svg
 [stargazers]:    https://github.com/enjoyneering/BH1750FVI/stargazers
 [hit-count]:     http://hits.dwyl.io/enjoyneering/BH1750FVI.svg
