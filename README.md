@@ -16,7 +16,7 @@ Supports all sensors features:
 - Read Illuminance*
 - Power Down, 1μA
 - Power Up, 190μA
-- Reset
+- Reset, clears previous measurement
 - Calibration
 
 Tested on:
