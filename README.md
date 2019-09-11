@@ -26,11 +26,11 @@ Tested on:
 
 *Library returns 0, if there is a communication error has occurred
 
-**Any optical filter you put in front of the sensor blocks some light. **Sensitivity is used to compensate the influence of the optical filter**. For example, when transmission rate of optical window is 50% (measurement result becomes 0.5 times lower), influence of optical window is ignored by changing sensor sensitivity from default 1.0 to 2.0 times.
+**Any optical filter you put in front of the sensor blocks some light. **Sensitivity is used to compensate the influence of the optical filter**. For example, when transmission rate of optical window is 50% (measurement result becomes 0.5 times lower), influence of optical window is compensated by changing sensor sensitivity from default 1.0 to 2.0 times.
 
 [license-badge]: https://img.shields.io/badge/License-GPLv3-blue.svg
 [license]:       https://choosealicense.com/licenses/gpl-3.0/
-[version]:       https://img.shields.io/badge/Version-1.2.4-green.svg
+[version]:       https://img.shields.io/badge/Version-1.2.6-green.svg
 [stars]:         https://img.shields.io/github/stars/enjoyneering/BH1750FVI.svg
 [stargazers]:    https://github.com/enjoyneering/BH1750FVI/stargazers
 [hit-count]:     http://hits.dwyl.io/enjoyneering/BH1750FVI.svg
