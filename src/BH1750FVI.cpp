@@ -90,7 +90,7 @@ bool BH1750FVI::begin(void)
 
 /**************************************************************************/
 /*
-    Sets sensor Resolution
+    Set sensor Resolution
 
     Continuous Mode:
     BH1750_CONTINUOUS_HIGH_RES_MODE   - 1.0 lx resolution
@@ -114,16 +114,17 @@ void BH1750FVI::setResolution(BH1750FVI_RESOLUTION res)
 
 /**************************************************************************/
 /*
-    Sets sensor sensitivity
+    Set sensor sensitivity
 
-    This option is used to compensate the influence of the optical filter.
-    For example, when transmission rate of optical window is 50% (measurement
+    This option is used to compensate the influence of optical filter.
+    Any filter you put in front of the sensor blocks some light. For
+    example, when transmission rate of optical window is 50% (measurement
     result becomes 0.5 times lower), influence of optical window is ignored
-    by changing sensor sensitivity from default 1.0 to 2.0 times
+    by changing sensor sensitivity from default 1.0 to 2.0 times.
 
     NOTE:
-    - sensitivity 0.45 - 3.68, default 1.00
-    - MTreg/measurement time register 31 - 254, default 69
+    - sensitivity range 0.45 - 3.68, default 1.00
+    - MTreg/measurement time register range 31 - 254, default 69
 */
 /**************************************************************************/
 bool BH1750FVI::setSensitivity(float sensitivity)
@@ -135,7 +136,7 @@ bool BH1750FVI::setSensitivity(float sensitivity)
 
   oldSensitivity = _sensitivity;                      //backup current sensitivity
   
-  valueMTreg = BH1750_MTREG_DEFAULT * sensitivity;    //calculating MTreg value for new sensitivity
+  valueMTreg = sensitivity * BH1750_MTREG_DEFAULT;    //calculating MTreg value for new sensitivity
 
   /* safety check, make sure valueMTreg never exceeds the limits */
   if (valueMTreg < BH1750_MTREG_MIN) 
@@ -177,10 +178,10 @@ bool BH1750FVI::setSensitivity(float sensitivity)
 
 /**************************************************************************/
 /*
-    Gets current sensor sensitivity
+    Get current sensor sensitivity
 
     NOTE:
-    - sensitivity 0.45 - 3.68, default 1.00
+    - sensitivity range 0.45 - 3.68, default 1.00
 */
 /**************************************************************************/
 float BH1750FVI::getSensitivity(void)
@@ -190,12 +191,12 @@ float BH1750FVI::getSensitivity(void)
 
 /**************************************************************************/
 /*
-    Reads light level
+    Read light level
 
     NOTE:
-    - measurement/integration time for "H2" and "H" resolution modes is so
-      long, so almost any noises including 50Hz/60Hz light fluctuation
-      is rejected.
+    - measurement/integration time for resolution modes "H2" & "H"
+      is very long, so almost any noise, including light fluctuations
+      of 50Hz/60Hz, is rejected.
 */
 /**************************************************************************/
 float BH1750FVI::readLightLevel(void)
@@ -208,14 +209,18 @@ float BH1750FVI::readLightLevel(void)
   if (write8(_sensorResolution) != true) return BH1750_ERROR; //error handler, collision on the i2c bus
 
   /* measurement delay */
-  switch(_sensorResolution)
+  switch(_sensorResolution)                                   //"switch-case" faster & has smaller footprint than "if-else", see Atmel AVR4027 Application Note
   {
-    case BH1750_CONTINUOUS_HIGH_RES_MODE: case BH1750_CONTINUOUS_HIGH_RES_MODE_2: case BH1750_ONE_TIME_HIGH_RES_MODE: case BH1750_ONE_TIME_HIGH_RES_MODE_2:
-      integrationTime = 180.0 * _sensitivity; //120..180ms * (0.45 .. 3.68) 
+    case BH1750_CONTINUOUS_HIGH_RES_MODE:
+    case BH1750_CONTINUOUS_HIGH_RES_MODE_2:
+    case BH1750_ONE_TIME_HIGH_RES_MODE:
+    case BH1750_ONE_TIME_HIGH_RES_MODE_2:
+      integrationTime = _sensitivity * 180;                   //120..180msec * (0.45 .. 3.68) 
       break;
 
-    case BH1750_CONTINUOUS_LOW_RES_MODE:  case BH1750_ONE_TIME_LOW_RES_MODE:
-      integrationTime = 24.0 * _sensitivity;  //16..24ms * (0.45 .. 3.68)
+    case BH1750_CONTINUOUS_LOW_RES_MODE:
+    case BH1750_ONE_TIME_LOW_RES_MODE:
+      integrationTime = _sensitivity * 24;                    //16..24msec * (0.45 .. 3.68)
       break;
   }
   delay(integrationTime);
@@ -223,10 +228,10 @@ float BH1750FVI::readLightLevel(void)
   #if defined(_VARIANT_ARDUINO_STM32_)
   Wire.requestFrom(_sensorAddress, 2);
   #else
-  Wire.requestFrom(_sensorAddress, 2, true);      //true, stop message after transmission & releas the I2C bus
+  Wire.requestFrom(_sensorAddress, 2, true);                  //"true" to stop message after transmission & releas I2C bus
   #endif
 
-  if (Wire.available() != 2) return BH1750_ERROR; //check "wire.h" rxBuffer & error handler, collision on the i2c bus
+  if (Wire.available() != 2) return BH1750_ERROR;             //check "wire.h" rxBuffer & collision on the i2c bus
 
   /* reads MSB byte, LSB byte from "wire.h" rxBuffer */
   #if (ARDUINO >= 100)
@@ -237,15 +242,19 @@ float BH1750FVI::readLightLevel(void)
   rawLightLevel |= Wire.receive();
   #endif
 
-  /* light level calculation */
+  /* light level calculation, p.11 */
   switch (_sensorResolution)
   {
-    case BH1750_CONTINUOUS_HIGH_RES_MODE_2: case BH1750_ONE_TIME_HIGH_RES_MODE_2:
-      lightLevel = 0.5 * _sensitivity * (float)rawLightLevel / _accuracy;
+    case BH1750_ONE_TIME_HIGH_RES_MODE_2:
+    case BH1750_CONTINUOUS_HIGH_RES_MODE_2:
+      lightLevel = 0.5 * (float)rawLightLevel / _accuracy * _sensitivity;
       break;
 
-    case BH1750_CONTINUOUS_HIGH_RES_MODE: case BH1750_CONTINUOUS_LOW_RES_MODE: case BH1750_ONE_TIME_HIGH_RES_MODE: case BH1750_ONE_TIME_LOW_RES_MODE:
-      lightLevel = _sensitivity * (float)rawLightLevel / _accuracy;
+    case BH1750_ONE_TIME_LOW_RES_MODE:
+    case BH1750_ONE_TIME_HIGH_RES_MODE:
+    case BH1750_CONTINUOUS_LOW_RES_MODE:
+    case BH1750_CONTINUOUS_HIGH_RES_MODE:
+      lightLevel = (float)rawLightLevel / _accuracy  *_sensitivity;
       break;
   }
 
@@ -254,7 +263,7 @@ float BH1750FVI::readLightLevel(void)
 
 /**************************************************************************/
 /*
-    Puts sensor to sleep
+    Put sensor to sleep
 */
 /**************************************************************************/
 void BH1750FVI::powerDown(void)
@@ -265,6 +274,9 @@ void BH1750FVI::powerDown(void)
 /**************************************************************************/
 /*
     Wakes up sensor from sleep
+
+    NOTE:
+    - wating for measurment command
 */
 /**************************************************************************/
 void BH1750FVI::powerOn(void)
@@ -274,7 +286,7 @@ void BH1750FVI::powerOn(void)
 
 /**************************************************************************/
 /*
-    Resets the sensor
+    Reset sensor
 
     NOTE:
     - used for removing previous measurement, reset only illuminance
@@ -293,7 +305,7 @@ void BH1750FVI::reset(void)
 
     NOTE:
     - measurement accuracy ±20%
-    - accuracy = sensor out lux / actual lux
+    - accuracy = sensor output lux / actual lux
     - accuracy/calibration range 0.96 - 1.44, typical - 1.2
 */
 /**************************************************************************/
@@ -307,7 +319,7 @@ void BH1750FVI::setCalibration(float value)
 
 /**************************************************************************/
 /*
-    Returns sensor calibration value
+    Return sensor calibration value
 
     NOTE:
     - calibration range 0.96 - 1.44, typical - 1.2
@@ -320,7 +332,7 @@ float BH1750FVI::getCalibration(void)
 
 /**************************************************************************/
 /*
-    Writes 8-bits value over I2C
+    Write 8-bits value over I2C
 */
 /**************************************************************************/
 bool BH1750FVI::write8(uint8_t value)
@@ -333,6 +345,6 @@ bool BH1750FVI::write8(uint8_t value)
   Wire.send(value);
   #endif
   
-  if (Wire.endTransmission(true) == 0) return true;
+  if (Wire.endTransmission(true) == 0) return true;  //"true" sends stop message after transmission & releases I2C bus
                                        return false;
 }
