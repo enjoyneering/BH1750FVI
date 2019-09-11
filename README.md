@@ -3,18 +3,19 @@
 # ROHM BH1750FVI
 This is an Arduino library for ROHM BH1750FVI Ambient Light Sensor
 
-- Default range:        1 - 65'535 lux
-- Measurement accuracy: ±20%, possible to calibrate
-- Peak wave length:     560nm, yellow-green
-- Power supply voltage: 2.4 - 3.6v
+- Default range:         1 - 65'535 lux
+- Measurement accuracy:  ±20%, possible to calibrate
+- Peak wave length:      560nm, yellow-green
+- Maximun I²C bus speed: 400KHz
+- Power supply voltage:  2.4 - 3.6v, absolute maximum 4.5v
 
 Supports all sensors features:
 
 - Changing Sensitivity**
 - Changing Resolution
 - Read Illuminance*
-- Power Down
-- Power Up
+- Power Down, 1μA
+- Power Up, 190μA
 - Reset
 - Calibration
 
