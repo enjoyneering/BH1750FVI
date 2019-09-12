@@ -254,7 +254,7 @@ float BH1750FVI::readLightLevel(void)
     case BH1750_ONE_TIME_HIGH_RES_MODE:
     case BH1750_CONTINUOUS_LOW_RES_MODE:
     case BH1750_CONTINUOUS_HIGH_RES_MODE:
-      lightLevel = (float)rawLightLevel / _accuracy  *_sensitivity;
+      lightLevel = (float)rawLightLevel / _accuracy * _sensitivity;
       break;
   }
 
