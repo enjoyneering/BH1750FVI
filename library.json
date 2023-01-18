@@ -1,6 +1,6 @@
 {
   "name":        "BH1750FVI",
-  "keywords":    "bh1750fvi, bh1750, gy-30, gy-302, ambient, light, sensor, i2c, lux, lx, rohm",
+  "keywords":    "rohm, bh1750fvi, bh1750, gy-30, gy-302, ambient, light, sensor, i2c, lux, lx, illuminance",
   "description": "ROHM BH1750FVI Ambient Light Sensor",
   "authors":
   {
@@ -12,7 +12,7 @@
     "type": "git",
     "url":  "https://github.com/enjoyneering/BH1750FVI.git"
   },
-  "version":    "1.2.6",
+  "version":    "1.3.0",
   "frameworks": "arduino",
   "platforms":  "*"
 }
