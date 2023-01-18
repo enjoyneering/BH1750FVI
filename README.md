@@ -18,7 +18,8 @@ This is an Arduino library for ROHM BH1750FVI Ambient Light Sensor
   - 1.0 lux, high resolution mode
   - 4.0 lux, low resolution mode
 - typical measurement range from 1..32767 lux to 1..65535 lux **(4)** **(5)**
-- typical measurement interval from 81..662 msec to 10..88 msec **(6)**
+- typical measurement interval from 10..88 msec to 81..662 msec **(6)**
+
 
 Supports all sensors features:
 - set sensitivity **(2)**
@@ -28,6 +29,7 @@ Supports all sensors features:
 - set measurement mode (high/low resolution and onetime/continuous measurement) **(3)**
 - sleep, 1μA
 - reset (clears previous measurement, not accepted in sleep mode)
+
 
 Tested on:
 - Arduino AVR
